@@ -18,7 +18,7 @@ public class Evaluate {
 	public static void main(String[] args) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		CompiledExpression compiled = JXPathContext
-				.compile("/PaintingJob/RoleList/PartyRole[RoleType/text()='me']/DistributorDetail/Identifier");
+				.compile("/PaintingJob/RoleList/PartyRole[RoleType/text()='me']/DistributorDetails/DistributorDetail[2]/Identifier");
 		
 		Method getExpression = compiled.getClass().getDeclaredMethod("getExpression");
 		getExpression.setAccessible(true);

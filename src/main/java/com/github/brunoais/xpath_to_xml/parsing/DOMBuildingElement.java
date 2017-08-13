@@ -314,6 +314,14 @@ public class DOMBuildingElement extends DOMBuildingNode implements Element{
 	public Object getUserData(String key) {
 		return realElement.getUserData(key);
 	}
+
+	public static DOMBuildingElement fromElement(Element element) {
+		if(element instanceof DOMBuildingElement){
+			return (DOMBuildingElement) element;
+		} else {
+			return new DOMBuildingElement(element, 0);
+		}
+	}
 	
 		
 }

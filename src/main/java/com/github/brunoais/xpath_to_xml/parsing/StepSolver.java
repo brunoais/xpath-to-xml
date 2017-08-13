@@ -6,19 +6,18 @@ import java.util.Collection;
 import org.apache.commons.jxpath.ri.compiler.Expression;
 import org.apache.commons.jxpath.ri.compiler.NodeNameTest;
 import org.apache.commons.jxpath.ri.compiler.Step;
+import org.w3c.dom.Element;
 
 public class StepSolver {
 
-	private ArrayList<String> currentPath;
+	private DOMBuildingElement currentElement;
 	private Step step;
+	private DOMBuildingElement newChild;
 
-	private ArrayList<String> extraPaths;
-
-	public StepSolver(ArrayList<String> currentPath, Step step) {
-		this.currentPath = new ArrayList<>(currentPath);
+	public StepSolver(DOMBuildingElement element, Step step) {
+		this.currentElement = element;
 		this.step = step;
 		
-		this.extraPaths = new ArrayList<>();
 	}
 	
 	public void solve() {
@@ -26,9 +25,8 @@ public class StepSolver {
 		Expression[] predicates = step.getPredicates();
 		if (predicates.length > 0) {
 			for (Expression predicate : predicates) {
-				ExpressionSolver pSolver = new ExpressionSolver(currentPath, predicate);
-				pSolver.resolvePredicate();
-				extraPaths.addAll(pSolver.pathsFound());
+				ExpressionSolver pSolver = new ExpressionSolver(currentElement, predicate);
+				pSolver.resolveExpression();
 			}
 		}
 		
@@ -36,19 +34,15 @@ public class StepSolver {
 			NodeNameTest nodeNaming = (NodeNameTest) step.getNodeTest();
 			String name = nodeNaming.getNodeName().getName();
 			
-			currentPath.add(name);
+			newChild = currentElement.forceExistGetChildByTagName(name, 1, true);
 			
 		} else {
 			System.out.println("Not node name: " + step);
 		}
 	}
 	
-	public ArrayList<String> newCurrentPath() {
-		return currentPath;
+	public DOMBuildingElement child() {
+		return newChild;
 	}
-
-	public ArrayList<String> pathsFound() {
-		return extraPaths;
-	}
-
+	
 }

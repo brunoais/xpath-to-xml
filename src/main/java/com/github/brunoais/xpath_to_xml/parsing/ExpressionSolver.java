@@ -8,52 +8,42 @@ import org.apache.commons.jxpath.ri.compiler.CoreOperationEqual;
 import org.apache.commons.jxpath.ri.compiler.Expression;
 import org.apache.commons.jxpath.ri.compiler.LocationPath;
 import org.apache.commons.jxpath.ri.compiler.Step;
+import org.w3c.dom.Element;
 
 public class ExpressionSolver {
 
-	private ArrayList<String> currentPath;
-	private Expression predicate;
+	private DOMBuildingElement element;
+	private Expression expression;
 
-	private ArrayList<String> extraPaths;
-
-	public ExpressionSolver(ArrayList<String> currentPath, Expression predicate) {
-		this.currentPath = new ArrayList<>(currentPath);
-		this.predicate = predicate;
-		
-		this.extraPaths = new ArrayList<>();
+	public ExpressionSolver(DOMBuildingElement element, Expression expression) {
+		this.element = element;
+		this.expression = expression;
 	}
 
-	public void resolvePredicate() {
+	public void resolveExpression() {
 		
-		if(predicate instanceof CoreOperationAnd){
-			Expression[] arguments = ((CoreOperationAnd) predicate).getArguments();
+		if(expression instanceof CoreOperationAnd){
+			Expression[] arguments = ((CoreOperationAnd) expression).getArguments();
 			for (Expression argument : arguments) {
-				ExpressionSolver pSolver = new ExpressionSolver(new ArrayList<>(currentPath), argument);
-				pSolver.resolvePredicate();
-				extraPaths.addAll(pSolver.pathsFound());
+				ExpressionSolver pSolver = new ExpressionSolver(element, argument);
+				pSolver.resolveExpression();
 			}
-		} else if(predicate instanceof CoreOperationEqual){
-			Expression[] arguments = ((CoreOperationEqual) predicate).getArguments();
+		} else if(expression instanceof CoreOperationEqual){
+			Expression[] arguments = ((CoreOperationEqual) expression).getArguments();
 
 			for (Expression argument : arguments) {
-				ExpressionSolver pSolver = new ExpressionSolver(new ArrayList<>(currentPath), argument);
-				pSolver.resolvePredicate();
-				extraPaths.addAll(pSolver.pathsFound());
+				ExpressionSolver pSolver = new ExpressionSolver(element, argument);
+				pSolver.resolveExpression();
 			}
-		} else if(predicate instanceof LocationPath){
-			LocationPath location = (LocationPath) predicate;
+		} else if(expression instanceof LocationPath){
+			LocationPath location = (LocationPath) expression;
 			Step[] steps = location.getSteps();
 			for (Step step : steps) {
-				StepSolver solver = new StepSolver(currentPath, step);
+				StepSolver solver = new StepSolver(element, step);
 				solver.solve();
-				extraPaths.addAll(solver.pathsFound());
 			}
 		}
 		
-	}
-
-	public ArrayList<String> pathsFound() {
-		return extraPaths;
 	}
 
 }
