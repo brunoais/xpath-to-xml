@@ -1,6 +1,7 @@
 package com.github.brunoais.xpath_to_xml.parsing;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.apache.commons.jxpath.ri.compiler.Expression;
 import org.apache.commons.jxpath.ri.compiler.NodeNameTest;
@@ -25,7 +26,7 @@ public class StepSolver {
 		Expression[] predicates = step.getPredicates();
 		if (predicates.length > 0) {
 			for (Expression predicate : predicates) {
-				PredicateSolver pSolver = new PredicateSolver(currentPath, predicate);
+				ExpressionSolver pSolver = new ExpressionSolver(currentPath, predicate);
 				pSolver.resolvePredicate();
 				extraPaths.addAll(pSolver.pathsFound());
 			}
@@ -44,6 +45,10 @@ public class StepSolver {
 	
 	public ArrayList<String> newCurrentPath() {
 		return currentPath;
+	}
+
+	public ArrayList<String> pathsFound() {
+		return extraPaths;
 	}
 
 }
