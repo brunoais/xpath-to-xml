@@ -36,7 +36,7 @@ public class DOMBuildingElement extends DOMBuildingNode implements Element{
 	}
 	
 	public DOMBuildingElement forceExistGetChildByTagName(String name, boolean resetInflex){
-		return null;
+		
 	}
 	
 	
