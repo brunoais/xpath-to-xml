@@ -1,7 +1,6 @@
 package com.github.brunoais.xpath_to_xml.parsing;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
@@ -10,12 +9,20 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.w3c.dom.TypeInfo;
 import org.w3c.dom.UserDataHandler;
 
 public class DOMBuildingElement extends DOMBuildingNode implements Element{
 
 	private Element realElement;
+	
+	public enum TextResult{
+		DONE,
+		ALREADY_HAD_TEXT,
+		ALREADY_HAS_ELEMENT_CHILD,
+		;
+	}
 
 
 	public DOMBuildingElement(Element realElement, int inflexCount) {
@@ -28,7 +35,7 @@ public class DOMBuildingElement extends DOMBuildingNode implements Element{
 		ArrayList<DOMBuildingElement> children = new ArrayList<>(tagNameElements.getLength());
 		int newInflex = resetInflex ? 0 : inflexCount + 1;
 		for (int i = 0; i < tagNameElements.getLength(); i++) {
-			if(tagNameElements.item(i).getParentNode().equals(realElement)){
+			if(tagNameElements.item(i).getParentNode().isSameNode(realElement)){
 				children.add(new DOMBuildingElement((Element) tagNameElements.item(i), newInflex));
 			}
 		}
@@ -36,7 +43,44 @@ public class DOMBuildingElement extends DOMBuildingNode implements Element{
 	}
 	
 	public DOMBuildingElement forceExistGetChildByTagName(String name, boolean resetInflex){
-		return null;
+		return forceExistGetChildByTagName(name, 1, resetInflex);
+	}
+	
+	/**
+	 * @TODO Optimize by caching and by not executing as much code
+	 */
+	public DOMBuildingElement forceExistGetChildByTagName(String name, int index, boolean resetInflex){
+		int newInflex = resetInflex ? 0 : inflexCount + 1;
+		ArrayList<DOMBuildingElement> children = getChildrenByTagName(name, resetInflex);
+		for(int i = children.size(); i <= index; i++){
+			Element newNode = realElement.getOwnerDocument().createElement(name);
+			realElement.appendChild(newNode);
+			children.add(new DOMBuildingElement(newNode, newInflex));
+		}
+		return children.get(index - 1);
+	}
+
+	public TextResult forceTextOnEmptyText(String text) {
+		
+		NodeList childNodes = getChildNodes();
+		
+		for (int i = 0; i < childNodes.getLength(); i++) {
+			if(childNodes.item(i).getNodeType() == Node.ELEMENT_NODE){
+				return TextResult.ALREADY_HAS_ELEMENT_CHILD;
+			}
+		}
+		
+		Node firstChild = getFirstChild();
+		
+		// just leaving like that for now
+		if(firstChild != null){
+			if(firstChild.getNodeType() == Node.TEXT_NODE && firstChild.getTextContent().trim().length() > 0){
+				return TextResult.ALREADY_HAD_TEXT;
+			}
+		}
+		
+		firstChild.setTextContent(text);
+		return TextResult.DONE;
 	}
 	
 	
