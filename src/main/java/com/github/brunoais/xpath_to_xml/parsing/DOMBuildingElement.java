@@ -52,7 +52,7 @@ public class DOMBuildingElement extends DOMBuildingNode implements Element{
 	public DOMBuildingElement forceExistGetChildByTagName(String name, int index, boolean resetInflex){
 		int newInflex = resetInflex ? 0 : inflexCount + 1;
 		ArrayList<DOMBuildingElement> children = getChildrenByTagName(name, resetInflex);
-		for(int i = children.size(); i <= index; i++){
+		for(int i = children.size(); i < index; i++){
 			Element newNode = realElement.getOwnerDocument().createElement(name);
 			realElement.appendChild(newNode);
 			children.add(new DOMBuildingElement(newNode, newInflex));
