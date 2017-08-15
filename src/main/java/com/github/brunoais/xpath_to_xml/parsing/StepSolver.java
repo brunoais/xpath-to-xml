@@ -1,16 +1,16 @@
 package com.github.brunoais.xpath_to_xml.parsing;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.jxpath.ri.Compiler;
 import org.apache.commons.jxpath.ri.compiler.Expression;
 import org.apache.commons.jxpath.ri.compiler.NodeNameTest;
+import org.apache.commons.jxpath.ri.compiler.NodeTypeTest;
 import org.apache.commons.jxpath.ri.compiler.Step;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 public class StepSolver {
 
@@ -42,6 +42,14 @@ public class StepSolver {
 				newChild = documentWithChild(name);
 			} else {
 				newChild = currentElement.forceExistGetChildByTagName(name, 1, true);				
+			}
+
+		} else if(step.getNodeTest() instanceof NodeTypeTest){
+			NodeTypeTest nodetyping = (NodeTypeTest) step.getNodeTest();
+			
+			if(nodetyping.getNodeType() == Compiler.NODE_TYPE_TEXT){
+				System.out.println("Expect text here: " + step);
+				
 			}
 			
 		} else {

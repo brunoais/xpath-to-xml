@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.jxpath.ri.compiler.Constant;
 import org.apache.commons.jxpath.ri.compiler.CoreOperationAnd;
 import org.apache.commons.jxpath.ri.compiler.CoreOperationEqual;
 import org.apache.commons.jxpath.ri.compiler.Expression;
@@ -60,7 +61,11 @@ public class ExpressionSolver {
 					child = solver.child();
 				}
 			}
+
+		} else if(expression instanceof Constant){
+			
 		}
+		
 		
 	}
 

@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.apache.commons.jxpath.ri.compiler.Expression;
 import org.apache.commons.jxpath.ri.compiler.NodeNameTest;
+import org.apache.commons.jxpath.ri.compiler.NodeTypeTest;
 import org.apache.commons.jxpath.ri.compiler.Step;
 
 public class StepSolver {
@@ -37,6 +38,11 @@ public class StepSolver {
 			String name = nodeNaming.getNodeName().getName();
 			
 			currentPath.add(name);
+
+		} else if(step.getNodeTest() instanceof NodeTypeTest){
+			NodeTypeTest nodeTyping = (NodeTypeTest) step.getNodeTest();
+			
+			nodeTyping.getNodeType()
 			
 		} else {
 			System.out.println("Not node name: " + step);
