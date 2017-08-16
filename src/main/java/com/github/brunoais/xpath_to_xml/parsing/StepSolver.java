@@ -4,6 +4,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.jxpath.ri.Compiler;
+import org.apache.commons.jxpath.ri.compiler.Constant;
 import org.apache.commons.jxpath.ri.compiler.Expression;
 import org.apache.commons.jxpath.ri.compiler.NodeNameTest;
 import org.apache.commons.jxpath.ri.compiler.NodeTypeTest;
@@ -29,7 +30,14 @@ public class StepSolver {
 	public void solve() throws ParserConfigurationException {
 
 		Expression[] predicates = step.getPredicates();
-		if (predicates.length > 0) {
+		int nodePos = 1;
+		
+		// Special situation. Selecting an nth node
+		if (predicates.length == 1 &&
+				predicates[0] instanceof Constant &&
+				predicates[0].compute(null) instanceof Number) {
+			nodePos = ((Number) predicates[0].compute(null)).intValue();
+		} else if (predicates.length > 0) {
 			for (Expression predicate : predicates) {
 				ExpressionSolver pSolver = new ExpressionSolver(currentElement, predicate, messagePasser);
 				pSolver.resolveExpression();
@@ -43,7 +51,7 @@ public class StepSolver {
 			if(currentElement == null){
 				newChild = documentWithChild(name);
 			} else {
-				newChild = currentElement.forceExistGetChildByTagName(name, 1, true);				
+				newChild = currentElement.forceExistGetChildByTagName(name, nodePos, true);				
 			}
 
 		} else if(step.getNodeTest() instanceof NodeTypeTest){

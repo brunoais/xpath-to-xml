@@ -24,7 +24,7 @@ import com.github.brunoais.xpath_to_xml.parsing.XPathDOMBuilder;
 public class FirstTest {
 	public static void main(String[] args) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParserConfigurationException, IOException, TransformerException {
 		CompiledExpression compiled = JXPathContext
-				.compile("/PaintingJob/RoleList/PartyRole[RoleType/du/text()='me']/DistributorDetails/DistributorDetail[1]/Identifier");
+				.compile("/PaintingJob/RoleList/PartyRole[RoleType/du/text()='me']/DistributorDetails/DistributorDetail[2]/Identifier");
 		
 		Method getExpression = compiled.getClass().getDeclaredMethod("getExpression");
 		getExpression.setAccessible(true);
