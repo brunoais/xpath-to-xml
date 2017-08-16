@@ -71,7 +71,9 @@ public class ExpressionSolver {
 			}
 
 		} else if(expression instanceof Constant){
-			messagePasser.handle((Constant) expression);
+			if(messagePasser != null){
+				messagePasser.handle((Constant) expression);
+			}
 		}
 		
 		

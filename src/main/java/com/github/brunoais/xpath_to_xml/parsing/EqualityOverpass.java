@@ -15,7 +15,7 @@ public class EqualityOverpass implements OverpassData {
 		
 		if(constant != null){
 			assignConstantToNode(constant, node);
-		} else if(node != null){
+		} else if(this.node != null){
 			assignNodeToNode(this.node, node);
 		}
 		this.node = node;
