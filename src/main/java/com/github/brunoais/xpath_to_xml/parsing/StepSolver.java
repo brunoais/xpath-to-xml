@@ -17,10 +17,12 @@ public class StepSolver {
 	private DOMBuildingElement currentElement;
 	private Step step;
 	private DOMBuildingElement newChild;
+	private EqualityOverpass messagePasser;
 
-	public StepSolver(DOMBuildingElement element, Step step) {
+	public StepSolver(DOMBuildingElement element, Step step, EqualityOverpass messagePasser) {
 		this.currentElement = element;
 		this.step = step;
+		this.messagePasser = messagePasser;
 		
 	}
 	
@@ -29,7 +31,7 @@ public class StepSolver {
 		Expression[] predicates = step.getPredicates();
 		if (predicates.length > 0) {
 			for (Expression predicate : predicates) {
-				ExpressionSolver pSolver = new ExpressionSolver(currentElement, predicate);
+				ExpressionSolver pSolver = new ExpressionSolver(currentElement, predicate, messagePasser);
 				pSolver.resolveExpression();
 			}
 		}
@@ -49,7 +51,7 @@ public class StepSolver {
 			
 			if(nodetyping.getNodeType() == Compiler.NODE_TYPE_TEXT){
 				System.out.println("Expect text here: " + step);
-				
+				messagePasser.handle(currentElement);
 			}
 			
 		} else {

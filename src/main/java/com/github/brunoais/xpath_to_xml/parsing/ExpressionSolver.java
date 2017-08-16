@@ -12,16 +12,23 @@ import org.apache.commons.jxpath.ri.compiler.Expression;
 import org.apache.commons.jxpath.ri.compiler.LocationPath;
 import org.apache.commons.jxpath.ri.compiler.Step;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 public class ExpressionSolver {
 
 	private DOMBuildingElement element;
 	private DOMBuildingElement child;
 	private Expression expression;
+	private EqualityOverpass messagePasser;
 
-	public ExpressionSolver(DOMBuildingElement element, Expression expression) {
+	public ExpressionSolver(DOMBuildingElement element, Expression expression, EqualityOverpass messagePasser) {
 		this.child = this.element = element;
 		this.expression = expression;
+		this.messagePasser = messagePasser;
+	}
+
+	public ExpressionSolver(DOMBuildingElement root, Expression expression) {
+		this(root, expression, null);
 	}
 
 	public void resolveExpression() throws ParserConfigurationException {
@@ -39,9 +46,10 @@ public class ExpressionSolver {
 			}
 		} else if(expression instanceof CoreOperationEqual){
 			Expression[] arguments = ((CoreOperationEqual) expression).getArguments();
+			EqualityOverpass messagePasser = new EqualityOverpass();
 
 			for (Expression argument : arguments) {
-				ExpressionSolver solver = new ExpressionSolver(element, argument);
+				ExpressionSolver solver = new ExpressionSolver(element, argument, messagePasser);
 				solver.resolveExpression();
 				if(element == null){
 					child = element = solver.child();
@@ -53,7 +61,7 @@ public class ExpressionSolver {
 			LocationPath location = (LocationPath) expression;
 			Step[] steps = location.getSteps();
 			for (Step step : steps) {
-				StepSolver solver = new StepSolver(child, step);
+				StepSolver solver = new StepSolver(child, step, messagePasser);
 				solver.solve();
 				if(element == null){
 					child = element = solver.child();
@@ -63,7 +71,7 @@ public class ExpressionSolver {
 			}
 
 		} else if(expression instanceof Constant){
-			
+			messagePasser.handle((Constant) expression);
 		}
 		
 		
