@@ -16,6 +16,7 @@ import org.w3c.dom.UserDataHandler;
 public class DOMBuildingElement extends DOMBuildingNode implements Element{
 
 	private Element realElement;
+	private int extraSiblings;
 	
 	public enum TextResult{
 		DONE,
@@ -28,7 +29,15 @@ public class DOMBuildingElement extends DOMBuildingNode implements Element{
 	public DOMBuildingElement(Element realElement, int inflexCount) {
 		super(realElement, inflexCount);
 		this.realElement = realElement;
+		this.extraSiblings = 0;
 	}
+	
+
+
+	public void tryingAgain() {
+		extraSiblings++;
+	}
+	
 	
 	public ArrayList<DOMBuildingElement> getChildrenByTagName(String name, boolean resetInflex){
 		NodeList tagNameElements = getElementsByTagName(name);
@@ -50,6 +59,7 @@ public class DOMBuildingElement extends DOMBuildingNode implements Element{
 	 * @TODO Optimize by caching and by not executing as much code
 	 */
 	public DOMBuildingElement forceExistGetChildByTagName(String name, int index, boolean resetInflex){
+		index += extraSiblings;
 		int newInflex = resetInflex ? 0 : inflexCount + 1;
 		ArrayList<DOMBuildingElement> children = getChildrenByTagName(name, resetInflex);
 		for(int i = children.size(); i < index; i++){

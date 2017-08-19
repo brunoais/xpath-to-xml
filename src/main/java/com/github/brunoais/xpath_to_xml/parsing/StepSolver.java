@@ -50,6 +50,8 @@ public class StepSolver {
 			
 			if(currentElement == null){
 				newChild = documentWithChild(name);
+			} else if(currentElement.getParentNode() instanceof Document && currentElement.getTagName().equals(name)){
+				newChild = currentElement;
 			} else {
 				newChild = currentElement.forceExistGetChildByTagName(name, nodePos, true);				
 			}

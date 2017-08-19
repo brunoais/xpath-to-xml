@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
@@ -14,34 +13,24 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.jxpath.CompiledExpression;
-import org.apache.commons.jxpath.JXPathContext;
-import org.apache.commons.jxpath.ri.compiler.Expression;
 import org.w3c.dom.Document;
 
 import com.github.brunoais.xpath_to_xml.parsing.XPathDOMBuilder;
 
 public class FirstTest {
 	public static void main(String[] args) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParserConfigurationException, IOException, TransformerException {
-		CompiledExpression compiled = JXPathContext
-				.compile("/PaintingJob/RoleList/PartyRole[RoleType/du/text()='me']/DistributorDetails/DistributorDetail[2]/Identifier");
-		
-		Method getExpression = compiled.getClass().getDeclaredMethod("getExpression");
-		getExpression.setAccessible(true);
-		Expression expression = (Expression) getExpression.invoke(compiled);
-		
-		
+
 		XPathDOMBuilder builder = new XPathDOMBuilder();
-		builder.execute(expression);
+		builder.execute("/PaintingJob/RoleList/PartyRole[RoleType/du/text()='me']/DistributorDetails/DistributorDetail[1]/Identifier");
+		builder.execute("/PaintingJob/RoleList/PartyRole[RoleType/du/text()='me']/DistributorDetails/DistributorDetail[3]/Identifier");
+		builder.execute("/PaintingJob/RoleList/PartyRole[RoleType/du/text()='you']/DistributorDetails/DistributorDetail[2]/Identifier");
 		
 		Document doc = builder.generatedDocument();
 		
 		printDocument(doc, System.out);
 		
-		if(1 == 1){
-			expression.hashCode();
-			
-		}
+		// for breakpoint purposes
+		doc.hashCode();
 		
 	}
 	

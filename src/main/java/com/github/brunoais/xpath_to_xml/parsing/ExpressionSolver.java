@@ -46,17 +46,23 @@ public class ExpressionSolver {
 			}
 		} else if(expression instanceof CoreOperationEqual){
 			Expression[] arguments = ((CoreOperationEqual) expression).getArguments();
-			EqualityOverpass messagePasser = new EqualityOverpass();
-
-			for (Expression argument : arguments) {
-				ExpressionSolver solver = new ExpressionSolver(element, argument, messagePasser);
-				solver.resolveExpression();
-				if(element == null){
-					child = element = solver.child();
-				} else {
-					child = solver.child();
+			EqualityOverpass messagePasser = null;
+			do{
+				messagePasser = new EqualityOverpass();
+				for (Expression argument : arguments) {
+					ExpressionSolver solver = new ExpressionSolver(element, argument, messagePasser);
+					solver.resolveExpression();
+					if(element == null){
+						child = element = solver.child();
+					} else {
+						child = solver.child();
+					}
 				}
-			}
+				if(messagePasser.status() == OverpassData.OverpassDataStatus.ALREADY_HAD_DIFFERENT_VALUE){
+					element.tryingAgain();
+				}
+			} while(messagePasser.status() == OverpassData.OverpassDataStatus.ALREADY_HAD_DIFFERENT_VALUE);
+			
 		} else if(expression instanceof LocationPath){
 			LocationPath location = (LocationPath) expression;
 			Step[] steps = location.getSteps();

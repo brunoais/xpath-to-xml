@@ -52,15 +52,16 @@ public class XPathDOMBuilder {
 
 	public void execute(String xQuery) throws ParserConfigurationException {
 		CompiledExpression compiled = JXPathContext
-				.compile("/PaintingJob/RoleList/PartyRole[RoleType/text()='me']/DistributorDetails/DistributorDetail[1]/Identifier");
+				.compile(xQuery);
+		Expression expression = null;
 		try{
 			Method getExpression = compiled.getClass().getDeclaredMethod("getExpression");
 			getExpression.setAccessible(true);
-			Expression expression = (Expression) getExpression.invoke(compiled);
-			execute(expression);
+			expression = (Expression) getExpression.invoke(compiled);
 		}catch (RuntimeException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
 			LOG.error("", e);
 		}
+		execute(expression);
 	}
 	
 //	public void execute(Expression[] expressions) throws ParserConfigurationException {
@@ -84,7 +85,9 @@ public class XPathDOMBuilder {
 	public void execute(Expression expression) throws ParserConfigurationException {
 		ExpressionSolver expSolver = new ExpressionSolver(root, expression);
 		expSolver.resolveExpression();
-		root = expSolver.root();
+		if(root == null){
+			root = expSolver.root();
+		}
 	}
 	public Document generatedDocument() {
 		return root.getOwnerDocument();
