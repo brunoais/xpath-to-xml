@@ -51,8 +51,7 @@ public class XPathDOMBuilder {
 	}
 
 	public void execute(String xQuery){
-		CompiledExpression compiled = JXPathContext
-				.compile(xQuery);
+		CompiledExpression compiled = JXPathContext.compile(xQuery);
 		Expression expression = null;
 		try{
 			Method getExpression = compiled.getClass().getDeclaredMethod("getExpression");
