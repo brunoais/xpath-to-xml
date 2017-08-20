@@ -17,6 +17,7 @@ import org.w3c.dom.Node;
 
 import com.github.brunoais.xpath_to_xml.parsing.DOMBuildingElement;
 import com.github.brunoais.xpath_to_xml.parsing.ExpressionSolver;
+import com.github.brunoais.xpath_to_xml.parsing.ParsingRuntimeException;
 
 public class XPathDOMBuilder {
 	static final Logger LOG = LoggerFactory.getLogger(XPathDOMBuilder.class);
@@ -50,17 +51,22 @@ public class XPathDOMBuilder {
 		root = null;
 	}
 
-	public void execute(String xQuery){
-		CompiledExpression compiled = JXPathContext.compile(xQuery);
-		Expression expression = null;
+	public void execute(String xQuery) throws XpathToXmlFailedException{
 		try{
-			Method getExpression = compiled.getClass().getDeclaredMethod("getExpression");
-			getExpression.setAccessible(true);
-			expression = (Expression) getExpression.invoke(compiled);
-		}catch (RuntimeException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-			LOG.error("Failed to obtain the expression to start executing", e);
+			CompiledExpression compiled = JXPathContext.compile(xQuery);
+			Expression expression = null;
+			try{
+				Method getExpression = compiled.getClass().getDeclaredMethod("getExpression");
+				getExpression.setAccessible(true);
+				expression = (Expression) getExpression.invoke(compiled);
+			}catch (RuntimeException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+				LOG.error("Failed to obtain the expression to start executing", e);
+				throw new CannotGetExpressionException("Failed to obtain the expression to start executing", e);
+			}
+			execute(expression);
+		}catch (ParsingRuntimeException e) {
+			throw new XpathToXmlFailedException(e);
 		}
-		execute(expression);
 	}
 	
 //	public void execute(Expression[] expressions) throws ParserConfigurationException {

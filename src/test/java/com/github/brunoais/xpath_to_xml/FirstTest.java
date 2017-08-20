@@ -3,9 +3,7 @@ package com.github.brunoais.xpath_to_xml;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.InvocationTargetException;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -16,7 +14,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 
 public class FirstTest {
-	public static void main(String[] args) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParserConfigurationException, IOException, TransformerException {
+	public static void main(String[] args) throws Throwable {
 
 		XPathDOMBuilder builder = new XPathDOMBuilder();
 		builder.execute("/PaintingJob/RoleList/PartyRole[RoleType/du/text()='me']/DistributorDetails/DistributorDetail[1]/Identifier");
