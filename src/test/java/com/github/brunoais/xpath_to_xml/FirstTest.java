@@ -15,8 +15,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 
-import com.github.brunoais.xpath_to_xml.parsing.XPathDOMBuilder;
-
 public class FirstTest {
 	public static void main(String[] args) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParserConfigurationException, IOException, TransformerException {
 

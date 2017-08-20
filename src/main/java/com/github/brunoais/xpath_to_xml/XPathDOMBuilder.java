@@ -1,4 +1,4 @@
-package com.github.brunoais.xpath_to_xml.parsing;
+package com.github.brunoais.xpath_to_xml;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -8,18 +8,18 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.jxpath.CompiledExpression;
 import org.apache.commons.jxpath.JXPathContext;
-import org.apache.commons.jxpath.ri.compiler.Constant;
-import org.apache.commons.jxpath.ri.compiler.CoreOperationEqual;
 import org.apache.commons.jxpath.ri.compiler.Expression;
-import org.apache.commons.jxpath.ri.compiler.LocationPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.github.brunoais.xpath_to_xml.parsing.DOMBuildingElement;
+import com.github.brunoais.xpath_to_xml.parsing.ExpressionSolver;
+
 public class XPathDOMBuilder {
-	public static final Logger LOG = LoggerFactory.getLogger(XPathDOMBuilder.class);
+	static final Logger LOG = LoggerFactory.getLogger(XPathDOMBuilder.class);
 
 	private DOMBuildingElement root;
 	private Document myDocument;
@@ -50,7 +50,7 @@ public class XPathDOMBuilder {
 		root = null;
 	}
 
-	public void execute(String xQuery) throws ParserConfigurationException {
+	public void execute(String xQuery){
 		CompiledExpression compiled = JXPathContext
 				.compile(xQuery);
 		Expression expression = null;
@@ -59,7 +59,7 @@ public class XPathDOMBuilder {
 			getExpression.setAccessible(true);
 			expression = (Expression) getExpression.invoke(compiled);
 		}catch (RuntimeException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-			LOG.error("", e);
+			LOG.error("Failed to obtain the expression to start executing", e);
 		}
 		execute(expression);
 	}
@@ -82,7 +82,7 @@ public class XPathDOMBuilder {
 //		}
 //	}
 	
-	public void execute(Expression expression) throws ParserConfigurationException {
+	public void execute(Expression expression) {
 		ExpressionSolver expSolver = new ExpressionSolver(root, expression);
 		expSolver.resolveExpression();
 		if(root == null){
