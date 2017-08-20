@@ -9,11 +9,14 @@ import org.apache.commons.jxpath.ri.compiler.Expression;
 import org.apache.commons.jxpath.ri.compiler.NodeNameTest;
 import org.apache.commons.jxpath.ri.compiler.NodeTypeTest;
 import org.apache.commons.jxpath.ri.compiler.Step;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 public class StepSolver {
+	static final Logger LOG = LoggerFactory.getLogger(StepSolver.class);
 
 	private DOMBuildingElement currentElement;
 	private Step step;

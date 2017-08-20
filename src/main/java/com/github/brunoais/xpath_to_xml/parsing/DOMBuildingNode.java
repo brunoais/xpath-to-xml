@@ -1,5 +1,8 @@
 package com.github.brunoais.xpath_to_xml.parsing;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -8,6 +11,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.UserDataHandler;
 
 public class DOMBuildingNode implements Node{
+	static final Logger LOG = LoggerFactory.getLogger(DOMBuildingNode.class);
 
 	Node realNode;
 	/*
