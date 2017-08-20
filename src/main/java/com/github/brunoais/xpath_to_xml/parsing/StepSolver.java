@@ -30,7 +30,7 @@ public class StepSolver {
 		
 	}
 	
-	public void solve() throws ParserConfigurationException {
+	public void solve() {
 
 		Expression[] predicates = step.getPredicates();
 		int nodePos = 1;
@@ -72,11 +72,18 @@ public class StepSolver {
 		}
 	}
 	
-	private DOMBuildingElement documentWithChild(String name) throws ParserConfigurationException {
-		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-		Element topElem = doc.createElement(name);
-		doc.appendChild(topElem);
-		return DOMBuildingElement.fromElement(topElem);
+	private DOMBuildingElement documentWithChild(String name){
+		Document doc;
+		try {
+			doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+			Element topElem = doc.createElement(name);
+			doc.appendChild(topElem);
+			return DOMBuildingElement.fromElement(topElem);
+		} catch (ParserConfigurationException e) {
+			// This just won't happen. Just registering to make sure
+			LOG.error("Could not create document required to hold the nodes", e);
+			throw new CannotMakeDocumentException("Could not create document required to hold the nodes", e);
+		}
 	}
 
 	public DOMBuildingElement child() {

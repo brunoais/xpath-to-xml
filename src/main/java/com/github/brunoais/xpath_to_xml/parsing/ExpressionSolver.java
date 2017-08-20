@@ -31,7 +31,7 @@ public class ExpressionSolver {
 		this(root, expression, null);
 	}
 
-	public void resolveExpression() throws ParserConfigurationException {
+	public void resolveExpression() {
 		
 		if(expression instanceof CoreOperationAnd){
 			Expression[] arguments = ((CoreOperationAnd) expression).getArguments();
