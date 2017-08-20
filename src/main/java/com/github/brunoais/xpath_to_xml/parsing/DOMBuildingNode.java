@@ -1,5 +1,16 @@
 package com.github.brunoais.xpath_to_xml.parsing;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -179,5 +190,25 @@ public class DOMBuildingNode implements Node{
 		return realNode.getUserData(key);
 	}
 	
+	@Override
+	public String toString() {
+		// Arbitrary starting size because it is useful
+		StringWriter outin = new StringWriter(1300);
+	    try {		
+		    TransformerFactory tf = TransformerFactory.newInstance();
+		    Transformer transformer = tf.newTransformer();
+		    transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+		    transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+		    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		    transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+		    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+			transformer.transform(new DOMSource(realNode), 
+			     new StreamResult(outin));
+			return outin.toString();
+		} catch (TransformerException e) {
+			LOG.warn("Could not transform Node into readable output", e);
+			return realNode.toString();
+		}
+	}
 	
 }
