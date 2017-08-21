@@ -34,8 +34,16 @@ public class DOMBuildingElement extends DOMBuildingNode implements Element{
 	
 
 
-	public void tryingAgain() {
-		extraSiblings++;
+	public DOMBuildingElement tryingAgain() {
+		Element replacementElement = null;
+		do{
+			replacementElement = (Element) realElement.getNextSibling();
+		}while(replacementElement != null && replacementElement.getTagName() != realElement.getTagName());
+		if(replacementElement == null){
+			replacementElement = realElement.getOwnerDocument().createElement(realElement.getTagName());
+			realElement.getParentNode().appendChild(replacementElement);
+		}
+		return new DOMBuildingElement(replacementElement, 0);
 	}
 	
 	

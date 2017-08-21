@@ -59,7 +59,7 @@ public class ExpressionSolver {
 					}
 				}
 				if(messagePasser.status() == OverpassData.OverpassDataStatus.ALREADY_HAD_DIFFERENT_VALUE){
-					element.tryingAgain();
+					element = element.tryingAgain();
 				}
 			} while(messagePasser.status() == OverpassData.OverpassDataStatus.ALREADY_HAD_DIFFERENT_VALUE);
 			
