@@ -34,18 +34,14 @@ public class StepSolver {
 
 		Expression[] predicates = step.getPredicates();
 		int nodePos = 1;
-		
+
 		// Special situation. Selecting an nth node
 		if (predicates.length == 1 &&
 				predicates[0] instanceof Constant &&
 				predicates[0].compute(null) instanceof Number) {
 			nodePos = ((Number) predicates[0].compute(null)).intValue();
-		} else if (predicates.length > 0) {
-			for (Expression predicate : predicates) {
-				ExpressionSolver pSolver = new ExpressionSolver(currentElement, predicate, messagePasser);
-				pSolver.resolveExpression();
-			}
 		}
+		
 		
 		if(step.getNodeTest() instanceof NodeNameTest){
 			NodeNameTest nodeNaming = (NodeNameTest) step.getNodeTest();
@@ -69,6 +65,14 @@ public class StepSolver {
 			
 		} else {
 			System.out.println("Not node name: " + step);
+		}
+
+		if (nodePos == 1 && predicates.length > 0) {
+			for (Expression predicate : predicates) { 
+				ExpressionSolver pSolver = new ExpressionSolver(newChild, predicate, messagePasser);
+				pSolver.resolveExpression();
+				newChild = pSolver.root();
+			}
 		}
 	}
 	
